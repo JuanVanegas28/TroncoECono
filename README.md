@@ -24,7 +24,7 @@ assets/             → logo, favicon, imagen para compartir y fotos de producto
 | El Tronquito | 12 cm | $14.000 – $18.000 según relleno |
 | Tronquito Canasta | canasta | $14.000 – $18.000 según relleno (igual al Tronquito) |
 | Tronco Bacano | 15 cm | $17.000 – $21.000 según relleno |
-| Canasta Caribeña Premium | canasta | $30.000 (escogen la proteína: carne, pollo, fajitas de pollo o cerdo, chicharrón) |
+| Canasta Caribeña Premium | canasta | $30.000 fijo; el cliente marca una o varias proteínas (carne, pollo, fajitas de pollo o cerdo, chicharrón) |
 | Tronco E' Cono (mixto) | 20 cm | $35.000 |
 | El Ajá de Siempre (cayeye) | 10 oz | $15.000 – $18.000 según versión |
 | Jugos naturales (corozo, frutos amarillos, tamarindo, guayaba agria) | 300 ml | $6.000 |

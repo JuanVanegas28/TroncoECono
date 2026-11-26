@@ -73,6 +73,8 @@ const ADICIONALES = [
    MENÚ
    - precio: precio fijo (número sin puntos)
    - opciones + precios: el precio depende de lo que se escoja.
+   - opciones con varias: true: el cliente marca una o varias y el
+     precio no cambia (usa precio fijo).
      La llave de "precios" es el valor escogido (o "valor1|valor2"
      si hay dos grupos de opciones).
    - imagen: foto del producto en assets/productos/
@@ -147,20 +149,16 @@ const MENU = [
     categoria: "conos",
     etiqueta: "Las canastas del vacile",
     nombre: "Canasta Caribeña Premium",
-    descripcion: "La canasta más cargada de la casa: maíz tierno, queso costeño y suero, con la proteína que tú escojas.",
+    descripcion: "La canasta más cargada de la casa, con las proteínas que tú escojas.",
     imagen: "assets/productos/canasta-caribena-premium.jpg",
     adicionales: true,
     insignia: "Premium",
+    precio: 30000,
+    // varias: true → el cliente marca una o varias (sin cambiar el precio).
+    // Para poner un límite, agrega por ejemplo  maximo: 3
     opciones: [
-      { nombre: "Proteína", valores: ["Carne desmechada", "Pollo desmechado", "Fajitas de pollo", "Fajitas de cerdo", "Chicharrón"] },
+      { nombre: "Proteínas", varias: true, valores: ["Carne desmechada", "Pollo desmechado", "Fajitas de pollo", "Fajitas de cerdo", "Chicharrón"] },
     ],
-    precios: {
-      "Carne desmechada": 30000,
-      "Pollo desmechado": 30000,
-      "Fajitas de pollo": 30000,
-      "Fajitas de cerdo": 30000,
-      "Chicharrón": 30000,
-    },
   },
   {
     id: "tronco-e-cono",

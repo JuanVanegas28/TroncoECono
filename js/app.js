@@ -59,7 +59,11 @@ const App = (() => {
   function save() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cart)); } catch { /* modo privado */ }
   }
-  const lineKey = (id, sel, extras) => [id, sel.join("+"), [...extras].sort().join("+")].join("|");
+  const lineKey = (id, sel, extras) =>
+    [id, sel.map((x) => (Array.isArray(x) ? x.join("&") : x)).join("+"), [...extras].sort().join("+")].join("|");
+  // Grupos donde el cliente puede marcar varias opciones (ej. proteínas de la canasta premium)
+  const isMulti = (g) => !!g.varias;
+  const missingMulti = (p, sel) => (p.opciones || []).some((g, gi) => isMulti(g) && !(sel[gi] || []).length);
 
   /* ---------------- Menú ---------------- */
   function renderFilters() {
@@ -174,7 +178,7 @@ const App = (() => {
     if (!p || p.agotado) return;
     const sel = [];
     (p.opciones || []).forEach((g, gi) => {
-      sel[gi] = g.valores.find((v) => prefixAvailable(p, [...sel.slice(0, gi), v]));
+      sel[gi] = isMulti(g) ? [] : g.valores.find((v) => prefixAvailable(p, [...sel.slice(0, gi), v]));
     });
     draft = { id, sel, extras: new Set(), qty: 1 };
     $("#optionsTitle").textContent = p.nombre;
@@ -190,6 +194,14 @@ const App = (() => {
   function renderOptions() {
     const p = product(draft.id);
     const groups = (p.opciones || []).map((g, gi) => {
+      if (isMulti(g)) {
+        const chosen = draft.sel[gi] || [];
+        const hint = g.maximo ? `escoge hasta ${g.maximo}` : "escoge una o varias";
+        const boxes = g.valores
+          .map((v) => `<label><input type="checkbox" value="${esc(v)}" data-multi="${gi}" ${chosen.includes(v) ? "checked" : ""} /><span><b>${esc(v)}</b></span></label>`)
+          .join("");
+        return `<fieldset class="opt-group"><legend>${esc(g.nombre)} <span class="muted">(${hint})</span></legend><div class="seg seg--opts seg--multi">${boxes}</div></fieldset>`;
+      }
       const buttons = g.valores
         .map((v) => {
           const enabled = prefixAvailable(p, [...draft.sel.slice(0, gi), v]);
@@ -224,12 +236,29 @@ const App = (() => {
 
   function updateDraftTotal() {
     const unit = unitPrice({ id: draft.id, sel: draft.sel, extras: [...draft.extras] });
-    $("#optionsConfirm").textContent = `Agregar · ${fmt(unit * draft.qty)}`;
+    const btn = $("#optionsConfirm");
+    const missing = missingMulti(product(draft.id), draft.sel);
+    btn.disabled = missing;
+    btn.textContent = missing ? "Escoge al menos una opción" : `Agregar · ${fmt(unit * draft.qty)}`;
   }
 
   modal.addEventListener("change", (e) => {
     if (!draft) return;
     const t = e.target;
+    if (t.dataset.multi != null) {
+      const gi = Number(t.dataset.multi);
+      const g = product(draft.id).opciones[gi];
+      let list = draft.sel[gi] || [];
+      if (t.checked && g.maximo && list.length >= g.maximo) {
+        t.checked = false;
+        toast(`Puedes escoger hasta ${g.maximo}`);
+        return;
+      }
+      list = t.checked ? [...list, t.value] : list.filter((v) => v !== t.value);
+      draft.sel[gi] = g.valores.filter((v) => list.includes(v)); // mismo orden del menú
+      updateDraftTotal();
+      return;
+    }
     if (t.dataset.group != null) {
       const gi = Number(t.dataset.group);
       const p = product(draft.id);
@@ -263,7 +292,7 @@ const App = (() => {
     if (modal.returnValue === "ok" && draft) {
       const p = product(draft.id);
       if (p.agotado) toast(`${p.nombre} se acaba de agotar`);
-      else addToCart(draft.id, draft.sel, [...draft.extras], draft.qty);
+      else if (!missingMulti(p, draft.sel)) addToCart(draft.id, draft.sel, [...draft.extras], draft.qty);
     }
     draft = null;
     modal.returnValue = "";
@@ -274,7 +303,7 @@ const App = (() => {
     const key = lineKey(id, sel, extras);
     const found = cart.find((l) => l.key === key);
     if (found) found.qty = Math.min(MAX_QTY, found.qty + qty);
-    else cart.push({ key, id, sel: [...sel], extras: [...extras], qty });
+    else cart.push({ key, id, sel: sel.map((x) => (Array.isArray(x) ? [...x] : x)), extras: [...extras], qty });
     save();
     renderCart();
     toast(`${product(id).nombre} agregado a tu pedido`);
@@ -290,7 +319,7 @@ const App = (() => {
 
   function describe(line) {
     const p = product(line.id);
-    const opts = (line.sel || []).join(", ");
+    const opts = (line.sel || []).flat().join(", ");
     const ex = (line.extras || []).map((id) => extra(id)?.nombre).filter(Boolean);
     return { p, opts, ex };
   }
