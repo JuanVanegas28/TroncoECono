@@ -43,7 +43,7 @@ const Admin = (() => {
 
     if (Store.mode === "firebase" && !Store.adminEmailSet()) {
       body = `<h3>Falta configurar el acceso</h3>
-        <p class="muted">Escribe el correo de la dueña en <code>adminEmail</code> dentro de <code>js/config.js</code>.</p>
+        <p class="muted">Escribe los correos de administración en <code>adminEmails</code> dentro de <code>js/config.js</code>.</p>
         <div class="auth__actions"><button type="button" class="btn btn--ghost-dark" data-close>Cerrar</button></div>`;
     } else if (view === "login") {
       body = `<h3>Administración</h3>

@@ -21,9 +21,10 @@ const CONFIG = {
   domicilio: null,
 
   /* ---------------- ADMINISTRACIÓN ----------------
-     Correo de la dueña: es el ÚNICO que puede entrar al panel
-     y cambiar precios. */
-  adminEmail: "troncoecono.ceo@gmail.com",
+     Correos que pueden entrar al panel y cambiar el menú.
+     Si agregas o quitas uno, cámbialo también en las reglas de
+     Firestore (firestore.rules y en la consola de Firebase). */
+  adminEmails: ["troncoecono.ceo@gmail.com", "pipejuan777@gmail.com"],
 
   /* Proyecto de Firebase "TroncoECono" (troncoecono-59523).
      Guarda los precios y el acceso de la dueña; los cambios se

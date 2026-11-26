@@ -52,10 +52,12 @@ const Store = (() => {
   const validImg = (src) => typeof src === "string" && /^data:image\/(jpeg|png|webp);base64,/.test(src) && src.length < 1000000;
   const norm = (e) => String(e || "").trim().toLowerCase();
 
+  // Lista de correos administradores (acepta el formato viejo adminEmail)
+  const admins = (Array.isArray(CONFIG.adminEmails) ? CONFIG.adminEmails : [CONFIG.adminEmail]).map(norm).filter(Boolean);
+
   function isAdminEmail(email) {
-    const admin = norm(CONFIG.adminEmail);
-    if (!admin) return mode === "demo"; // en demo, cualquier correo
-    return norm(email) === admin;
+    if (!admins.length) return mode === "demo"; // en demo, cualquier correo
+    return admins.includes(norm(email));
   }
 
   function loadScript(src) {
@@ -247,7 +249,7 @@ const Store = (() => {
   }
 
   async function register(email, password) {
-    if (!isAdminEmail(email)) throw new Error("Solo el correo de la dueña puede crear la contraseña de administración.");
+    if (!isAdminEmail(email)) throw new Error("Solo los correos de administración pueden crear una contraseña aquí.");
     if (String(password).length < 8) throw new Error("La contraseña debe tener al menos 8 caracteres.");
     if (mode === "demo") {
       const acc = ls.get(KEYS.demoAccount);
@@ -353,7 +355,7 @@ const Store = (() => {
     onAuth: (cb) => { authListeners.push(cb); cb(user); },
     currentUser: () => user,
     isAdminEmail,
-    adminEmailSet: () => !!norm(CONFIG.adminEmail),
+    adminEmailSet: () => admins.length > 0,
     login, register, resetPassword, resendVerification, refreshUser, logout, save, lastUpdated,
   };
 })();

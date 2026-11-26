@@ -37,7 +37,7 @@ assets/             → logo, favicon, imagen para compartir y fotos de producto
 - Proyecto: **TroncoECono** (`troncoecono-59523`), en la cuenta de Google de Juan David.
 - Acceso con correo y contraseña: activado.
 - Base de datos Firestore con las reglas de `firestore.rules` publicadas:
-  todos pueden **leer** el menú; solo **troncoecono.ceo@gmail.com** (con el correo confirmado) puede **cambiarlo**.
+  todos pueden **leer** el menú; solo **troncoecono.ceo@gmail.com** y **pipejuan777@gmail.com** (con el correo confirmado) pueden **cambiarlo**.
   - `tienda/precios`: precios, nombres, descripciones y disponibilidad.
   - `imagenes/{producto}`: fotos subidas desde el panel (JPG comprimido, máx. ~700 KB cada una).
 - App web "TroncoEcono Web" registrada; sus claves ya están en `js/config.js`.

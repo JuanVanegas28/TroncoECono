@@ -2,28 +2,28 @@ rules_version = '2';
 
 // Reglas de seguridad de Firestore para Tronco E' Cono.
 // Pegar en Firebase → Firestore Database → Reglas → Publicar.
-// Todos pueden LEER el menú; solo la dueña (correo confirmado) lo puede CAMBIAR.
+// Todos pueden LEER el menú; solo los administradores (correo confirmado) lo pueden CAMBIAR.
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function esDuena() {
+    function esAdmin() {
       return request.auth != null
-        && request.auth.token.email == 'troncoecono.ceo@gmail.com'
+        && request.auth.token.email in ['troncoecono.ceo@gmail.com', 'pipejuan777@gmail.com']
         && request.auth.token.email_verified == true;
     }
 
     // Precios, nombres, descripciones y disponibilidad
     match /tienda/precios {
       allow read: if true;
-      allow write: if esDuena();
+      allow write: if esAdmin();
     }
 
     // Fotos subidas desde el panel (una por producto, máx. ~700 KB)
     match /imagenes/{producto} {
       allow read: if true;
-      allow delete: if esDuena();
-      allow create, update: if esDuena()
+      allow delete: if esAdmin();
+      allow create, update: if esAdmin()
         && request.resource.data.src is string
         && request.resource.data.src.size() < 700000;
     }
