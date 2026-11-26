@@ -147,11 +147,20 @@ const MENU = [
     categoria: "conos",
     etiqueta: "Las canastas del vacile",
     nombre: "Canasta Caribeña Premium",
-    descripcion: "La canasta más cargada de la casa y la que trae más chicharrón: maíz tierno, chicharrón, pollo desmechado, carne desmechada, queso costeño y suero.",
+    descripcion: "La canasta más cargada de la casa: maíz tierno, queso costeño y suero, con la proteína que tú escojas.",
     imagen: "assets/productos/canasta-caribena-premium.jpg",
     adicionales: true,
-    precio: 30000,
     insignia: "Premium",
+    opciones: [
+      { nombre: "Proteína", valores: ["Carne desmechada", "Pollo desmechado", "Fajitas de pollo", "Fajitas de cerdo", "Chicharrón"] },
+    ],
+    precios: {
+      "Carne desmechada": 30000,
+      "Pollo desmechado": 30000,
+      "Fajitas de pollo": 30000,
+      "Fajitas de cerdo": 30000,
+      "Chicharrón": 30000,
+    },
   },
   {
     id: "tronco-e-cono",
